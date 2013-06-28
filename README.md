@@ -17,6 +17,13 @@ Algorithm
 Just continuously refresh until the slot gets an empty seat. Add it and notify
 user by email that work is done. Exit gracefully
 
+Dependencies
+------------
+
++ python-mechanize
++ BeautifulSoup
++ PIL
++ GTK3+
 
 TODO
 ----
@@ -33,6 +40,10 @@ systems.
 3. A more intelligent course selector. Read the option that the user has input,
 match it with his/her existing time table slots, and determine if possible or
 not!
+
+
+How to Run
+----------
 
 
 
