@@ -46,5 +46,5 @@ How to Run
 ----------
 
 On a UNIX machine:
-    `./start.sh'
+    `./start.sh`
 
