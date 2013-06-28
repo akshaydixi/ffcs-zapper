@@ -25,7 +25,7 @@ TODO
 ways, 
     + Image processing to read to captcha.asp bmp image
     + Cracking the .aspx code that generates the captcha. Already traced the
-    origins to [here](www.tipstricks.com)
+    origins to [here](http://www.tipstricks.com)
 
 2. Maybe better the design and support . Currently this only works on GTk3+ supported
 systems.
