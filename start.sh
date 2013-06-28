@@ -1,1 +1,1 @@
-python ffcstest.py
+python testffcs.py
