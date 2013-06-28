@@ -45,5 +45,6 @@ not!
 How to Run
 ----------
 
-
+On a UNIX machine:
+    `./start.sh'
 
