@@ -1,9 +1,12 @@
 from gi.repository import Gtk
 from browser import Browser
+from BeautifulSoup import BeautifulSoup
 browser = Browser()
 br = browser.getBrowser()
-mainUrl = 'https://academics.vit.ac.in/student'
-captchaUrl = 'https://academics.vit.ac.in/student/captcha.asp'
+mainUrl = 'http://academics2.vit.ac.in/addrop/ffcs_login.asp'
+captchaUrl = 'http://academics2.vit.ac.in/addrop/captcha.asp'
+anextUrl ='http://academics2.vit.ac.in/addrop/courselist.asp?cropt=1&srhby=2&srhstr=cse202'
+bnextUrl='http://academics2.vit.ac.in/addrop/courselist.asp?cropt=1&srhby=2&srhstr='
 flow = False
 objects = {}
 def initialize():
@@ -21,10 +24,20 @@ def hello(widget):
     br['passwd']=passwd_text
     br['vrfcd']=vrfcd_text
     br.submit()
-    if '11BCE0244' in br.response().read():
-        print 'here'
-        flow = True
+    flow = True
     Gtk.main_quit()
+
+def secondButtonPress(widget):
+    global flow
+    coursecode_text = objects['coursecode'].get_text()
+    serialno_text = objects['serialno'].get_text()
+    theUrl = bnextUrl+coursecode_text
+    r = br.open(theUrl)
+    br.select_form(nr=0)
+    br.submit()
+    html =  br.response().read()
+    soup = BeautifulSoup(html)
+    print soup.prettify()
 
 def first():
     initialize()
@@ -51,15 +64,16 @@ def second():
     builder.add_from_file("ffcs2.glade")
     window = builder.get_object("window1")
     window.show_all()
+    objects['coursecode']=builder.get_object('coursecode')
+    objects['serialno']=builder.get_object('serialno')
     handlers = {
-        "onDeleteWindow" : Gtk.main_quit
-        }
+        "onDeleteWindow" : Gtk.main_quit,
+        "onButtonPressed" : secondButtonPress}
     builder.connect_signals(handlers)
     Gtk.main()
 
 if __name__ == "__main__" :
     first()
-    print flow
     if flow:
         second()
 

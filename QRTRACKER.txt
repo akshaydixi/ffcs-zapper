@@ -1,0 +1,5 @@
+1. Change daemonize to serve qr_tracker.py
+2. Add qr_tracker.py to script folder
+3. Call daemonize from PHP as follows:
+	system('python /opt/lampp/htdocs/pribeta/script/daemonize.py updateQRTrack <id> <ip_address>');
+3. qr_tracker : https://gist.github.com/akshaydixi/97fb1b8f412376312284 

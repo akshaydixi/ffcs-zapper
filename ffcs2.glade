@@ -31,7 +31,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry1">
+              <object class="GtkEntry" id="coursecode">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -89,7 +89,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry2">
+              <object class="GtkEntry" id="serialno">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -135,6 +135,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_action_appearance">False</property>
+            <signal name="clicked" handler="onButtonPressed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
