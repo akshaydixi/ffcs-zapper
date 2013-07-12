@@ -1,3 +1,5 @@
+import re
+import unicodedata
 from gi.repository import Gtk
 from browser import Browser
 from BeautifulSoup import BeautifulSoup
@@ -13,7 +15,37 @@ def initialize():
     br.open(mainUrl)
     with open('captcha.bmp','w') as f:
         f.write(br.open_novisit(captchaUrl).read())
-    
+
+def asciify2(s):
+    matches = re.findall("&#\d+;",s)
+    if len(matches) > 0:
+        hits = set(matches)
+        for hit in hits:
+            name = hit[2:-1]
+            try:
+                entnum = int(name)
+                s = s.replace(hit,unichr(entnum))
+            except ValueError:
+                pass
+    matches = re.findall("&\w+;",s)
+    hits = set(matcheS)
+    amp = "&amp;"
+        hits.remove(amp)
+    for hit in hits:
+        name = hit[1:-1]
+        if htmlentitydefs.name2codepoint.has_key(name):
+            s = s.replace(hit, "")
+    s = s.replace(amp,"&")
+    return s
+
+
+
+def getsoup(html):
+    soup = BeuatifulSoup(html)
+    return soup
+
+
+
 def hello(widget):
     global flow
     regno_text = objects['regno'].get_text()
@@ -26,18 +58,31 @@ def hello(widget):
     br.submit()
     flow = True
     Gtk.main_quit()
-
+def sendMail(body):
+    print body #LOLZ
 def secondButtonPress(widget):
     global flow
     coursecode_text = objects['coursecode'].get_text()
     serialno_text = objects['serialno'].get_text()
     theUrl = bnextUrl+coursecode_text
-    r = br.open(theUrl)
-    br.select_form(nr=0)
-    br.submit()
-    html =  br.response().read()
-    soup = BeautifulSoup(html)
-    print soup.prettify()
+    while True:
+     r = br.open(theUrl)
+     br.select_form(nr=0)
+     br.submit()
+     html =  br.response().read()
+     soup = getsoup(html)
+     tds = [a.renderContents() for a in soup.findAll('table')[2].findAll('font',attrs={'color':'black'})]
+     index = (serialno_text-1)*9 + 8
+     if eval(tds[index]) > 0 : 
+         body = coursecode_text + ":" +  serialno_text
+         sendMail(body)
+         exit(0)
+     else:
+        print 'iterated'
+        continue
+
+    
+
 
 def first():
     initialize()
