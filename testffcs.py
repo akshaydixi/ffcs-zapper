@@ -1,8 +1,25 @@
+import mechanize
+import string
+import smtplib
 import re
 import unicodedata
 from gi.repository import Gtk
 from browser import Browser
 from BeautifulSoup import BeautifulSoup
+
+#------------------
+HOST = "smtp.gmail.com"
+SUBJECT = "SEAT KHALI"
+TO = "akshaydixi@gmail.com"
+FROM = "info.adixit@gmail.com"
+text = "GOT IT ! SEAT KHAALI! JALDI!!"
+BODY = string.join(("From : %s" % FROM,
+                    "To : %s" % TO,
+                    "Subject : %s" % SUBJECT,
+                    "",
+                    text), "\r\n")
+#------------------
+
 browser = Browser()
 br = browser.getBrowser()
 mainUrl = 'http://academics2.vit.ac.in/addrop/ffcs_login.asp'
@@ -30,7 +47,7 @@ def asciify2(s):
     matches = re.findall("&\w+;",s)
     hits = set(matcheS)
     amp = "&amp;"
-        hits.remove(amp)
+    hits.remove(amp)
     for hit in hits:
         name = hit[1:-1]
         if htmlentitydefs.name2codepoint.has_key(name):
@@ -41,7 +58,7 @@ def asciify2(s):
 
 
 def getsoup(html):
-    soup = BeuatifulSoup(html)
+    soup = BeautifulSoup(html)
     return soup
 
 
@@ -59,27 +76,59 @@ def hello(widget):
     flow = True
     Gtk.main_quit()
 def sendMail(body):
-    print body #LOLZ
+    text = body
+    server = smtplib.SMTP(HOST,587)
+    server.ehlo()
+    server.starttls()
+    server.login('info.adixit@gmail.com','pokebeypotter')
+    server.sendmail(FROM,[TO],BODY)
+    server.quit()
 def secondButtonPress(widget):
     global flow
     coursecode_text = objects['coursecode'].get_text()
     serialno_text = objects['serialno'].get_text()
     theUrl = bnextUrl+coursecode_text
+    value = 0
+    ctr = 0
     while True:
      r = br.open(theUrl)
-     br.select_form(nr=0)
+     br.select_form(nr=value)
      br.submit()
-     html =  br.response().read()
+     response =  br.response()
+     html = response.read()
      soup = getsoup(html)
-     tds = [a.renderContents() for a in soup.findAll('table')[2].findAll('font',attrs={'color':'black'})]
-     index = (serialno_text-1)*9 + 8
-     if eval(tds[index]) > 0 : 
-         body = coursecode_text + ":" +  serialno_text
-         sendMail(body)
-         exit(0)
-     else:
-        print 'iterated'
-        continue
+     if value == 0:
+         tds = [a.renderContents() for a in soup.findAll('table')[2].findAll('font',attrs={'color':'black'})]
+         index = (eval(serialno_text)-1)*9 + 8
+         venue = (eval(serialno_text)-1)*9 + 3
+         if eval(tds[index]) > 0 : 
+             body = coursecode_text + ":" +  serialno_text
+             sendMail(body)
+             value = 1
+             continue
+         else:
+             ctr+=1
+             print ctr
+             continue
+     if value == 1:
+         tds = soup.findAll('td',attrs={'align' : 'center'})
+         start = 5
+         index = 0
+         while start < len(tds):
+            if venue == tds[start]:
+                break
+            start+=5
+         inputs = soup.findAll('input',attrs = {'type' : 'radio'})
+         inp = inputs[index]
+         val = inp['value']
+         forms = mechanize.ParseResponse(br.response(),backwards_compat=False)
+         form = forms[0]
+         br.select_form(nr = 0)
+         br.form.set_value([val],name='clsnbr1')
+         br.submit()
+         print br.response().read()
+         break
+    exit(0)
 
     
 
