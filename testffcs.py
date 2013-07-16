@@ -80,7 +80,7 @@ def sendMail(body):
     server = smtplib.SMTP(HOST,587)
     server.ehlo()
     server.starttls()
-    server.login('info.adixit@gmail.com','pokebeypotter')
+    server.login('info.adixit@gmail.com','thisisarandompassword')
     server.sendmail(FROM,[TO],BODY)
     server.quit()
 def secondButtonPress(widget):
@@ -90,6 +90,8 @@ def secondButtonPress(widget):
     theUrl = bnextUrl+coursecode_text
     value = 0
     ctr = 0
+    if coursecode_text == 'CSE304' :
+        indexes = ['1','2','3','4']
     while True:
      r = br.open(theUrl)
      br.select_form(nr=value)
@@ -98,9 +100,12 @@ def secondButtonPress(widget):
      html = response.read()
      soup = getsoup(html)
      if value == 0:
+      for xserialno_text in indexes:
          tds = [a.renderContents() for a in soup.findAll('table')[2].findAll('font',attrs={'color':'black'})]
-         index = (eval(serialno_text)-1)*9 + 8
-         venue = (eval(serialno_text)-1)*9 + 3
+         index = (eval(xserialno_text)-1)*9 + 8
+         venue = (eval(xserialno_text)-1)*9 + 3
+         print tds[venue],venue
+
          if eval(tds[index]) > 0 : 
              body = coursecode_text + ":" +  serialno_text
              sendMail(body)
@@ -110,6 +115,7 @@ def secondButtonPress(widget):
              ctr+=1
              print ctr
              continue
+      continue
      if value == 1:
          tds = soup.findAll('td',attrs={'align' : 'center'})
          start = 5
