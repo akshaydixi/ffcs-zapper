@@ -92,6 +92,8 @@ def secondButtonPress(widget):
     ctr = 0
     if coursecode_text == 'CSE304' :
         indexes = ['1','2','3','4']
+    else:
+        indexes = [serialno_text]
     while True:
      r = br.open(theUrl)
      br.select_form(nr=value)
